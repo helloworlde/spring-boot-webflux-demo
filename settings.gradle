@@ -1,0 +1,5 @@
+rootProject.name = 'SpringBootReactive'
+
+include 'reactive-mongo'
+include 'reactive-redis'
+include 'reactive-security'
