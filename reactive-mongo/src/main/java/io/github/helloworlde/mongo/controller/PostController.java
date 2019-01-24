@@ -4,6 +4,7 @@ import io.github.helloworlde.mongo.common.NotFoundException;
 import io.github.helloworlde.mongo.model.Post;
 import io.github.helloworlde.mongo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/posts")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PostController {
 
     @Autowired
@@ -49,11 +51,11 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> delete(@PathVariable("id") String id) {
         return postRepository
                 .findById(id)
-                .then(postRepository.deleteById(id))
-                .switchIfEmpty(Mono.error(new NotFoundException(id)));
+                .then(postRepository.deleteById(id));
     }
 
 }
