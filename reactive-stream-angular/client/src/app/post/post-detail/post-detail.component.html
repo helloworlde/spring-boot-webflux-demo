@@ -1,0 +1,11 @@
+<h2>Post Detail</h2>
+<div class="card" *ngIf="selectedPost">
+  <img src="/assets/img/shiba2.jpg" class="card-img-top" alt="">
+  <div class="card-body">
+    <h5 class="card-title">{{selectedPost?.title}}</h5>
+    <p class="card-text">{{selectedPost?.content}}</p>
+  </div>
+  <div class="card-footer">
+    <small class="text-muted">{{selectedPost?.createDate | date: 'yyyy-MM-dd HH:mm:ss'}}</small>
+  </div>
+</div>
