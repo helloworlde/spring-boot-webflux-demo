@@ -22,7 +22,7 @@ export class PostService {
     this.posts = [];
 
     return Observable.create((observer) => {
-      const url = `${this.postUrl}/stream`;
+      const url = `${this.postUrl}/nonblock`;
       const eventSource = new EventSourcePolyfill(url, {
         heartbeatTimeout: 5000,
         connectionTimeout: 5000
@@ -46,6 +46,6 @@ export class PostService {
   }
 
   getPostBlocked(): Observable<Array<Post>> {
-    return this.http.get<Array<Post>>(`${this.postUrl}`);
+    return this.http.get<Array<Post>>(`${this.postUrl}/block`);
   }
 }

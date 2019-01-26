@@ -22,13 +22,13 @@ public class PostController {
     @Autowired
     private PostRepository postRepository;
 
-    @GetMapping
+    @GetMapping("/block")
     public Flux<Post> list() {
-        return postRepository.findAll().delayElements(Duration.ofMillis(100));
+        return postRepository.findAll().delayElements(Duration.ofMillis(500));
     }
 
-    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/nonblock", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Post> online() {
-        return postRepository.findAll().delayElements(Duration.ofMillis(100));
+        return postRepository.findAll().delayElements(Duration.ofMillis(500));
     }
 }

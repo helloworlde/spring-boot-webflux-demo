@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 public class CustomWebFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if ("/".equals(exchange.getRequest().getURI().getPath())) {
+        if ("/".equals(exchange.getRequest().getURI().getPath()) || "/post".equals(exchange.getRequest().getURI().getPath())) {
             return chain.filter(
                     exchange.mutate()
                             .request(
