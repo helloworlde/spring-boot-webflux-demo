@@ -1,14 +1,160 @@
-## Client
+# 使用 Spring WebFlux 和 Angular 开发响应式应用
+
+使用 WebFlux 作为后端框架，用 Stream 流开发非阻塞的 API，前端使用Angular，数据库使用 MongoDB；构建一个非阻塞的应用
+
+- 效果
+![效果演示](/img/reactive-stream-angular-demo.gif)
+
+如果使用阻塞式 API，当请求的数据较多时等待时间会很长，影响使用体验；如果使用非阻塞的 API，可以分多次加载数据，明显提升应用相应速度
+
+## 使用 
+
+- Clone 代码并编译
+
+```bash
+git clone https://github.com/helloworlde/SpringBootReactive.git
+cd SpringBootReactive/reactive-stream-angular/client/ && npm install && ng build && cd ../server/ && ./gradlew bootRun
+```
+
+- 访问 `http://localhost:8080`
+
+---
+
+## 创建服务端应用
+
+### 添加依赖
+
+```groovy
+implementation('org.springframework.boot:spring-boot-starter-webflux')
+implementation('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')    
+implementation('org.projectlombok:lombok')
+```
+
+### 添加接口
+
+- 添加Model
+
+```java
+@Document
+@Data
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Post {
+
+    @Id
+    private String id;
+
+    private String title;
+
+    private String content;
+
+    @CreatedDate
+    private LocalDateTime createDate;
+
+}
+```
+
+- 添加 Repository
+
+```java
+public interface PostRepository extends ReactiveMongoRepository<Post, String> {
+
+}
+``` 
+
+- 添加接口
+
+对每一个数据延时500ms 后返回
+
+```java
+@RestController
+@RequestMapping("/posts")
+public class PostController {
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @GetMapping("/block")
+    public Flux<Post> list() {
+        return postRepository.findAll().delayElements(Duration.ofMillis(500));
+    }
+
+    @GetMapping(value = "/nonblock", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Post> online() {
+        return postRepository.findAll().delayElements(Duration.ofMillis(500));
+    }
+}
+```
+
+### 修改配置
+
+- application.properties
+
+```properties
+# MongoDB Config
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+#spring.data.mongodb.username=
+#spring.data.mongodb.password=
+spring.data.mongodb.database=blog
+```
+
+- CorsFilter.java
+
+允许客户端进行跨域访问
+
+```java
+@Component
+public class CorsFilter implements WebFilter {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "*");
+        exchange.getResponse().getHeaders().add("Access-Control-Allow-Headers", "*");
+        return chain.filter(exchange);
+    }
+}
+```
+
+- DataInitializer.java
+初始化数据
+
+```java
+private void initPosts() {
+        postRepository.deleteAll()
+                .thenMany(
+                        Flux.range(1, 10)
+                                .flatMap(title -> postRepository.save(
+                                        Post.builder()
+                                                .title("Post " + title)
+                                                .content("Content of " + title)
+                                                .build()
+                                        )
+                                )
+                )
+                .log()
+                .subscribe(
+                        null,
+                        null,
+                        () -> log.info("Done post data initialization ...")
+                );
+    }
+```
+
+## 创建客户端应用
+
+需要使用到 [Angular-Cli](https://cli.angular.io/) 
 
 ### 创建应用
 
-```shell
+```bash
 ng new client
 ```
 
 - 添加 Bootstrap 并引入
 
-```shell
+```bash
 npm install bootstrap
 ```
 在 `style.css` 中添加
@@ -20,7 +166,7 @@ npm install bootstrap
 - 添加 EventSourcePolyfill
 Angular 新版本中如果直接使用 EventSource 异步加载数据到页面上会有问题，改用 EventSourcePolyfill 代替 EventSource
 
-```shell
+```bash
 npm install ng-event-source
 ```
 
@@ -49,7 +195,7 @@ export class Post {
 
 - 添加组件
 
-```shell
+```bash
 ng generate component post/post-list
 ```
 
@@ -57,7 +203,7 @@ ng generate component post/post-list
 
 - 添加组件
 
-```shell
+```bash
 ng generate component post/post-detail
 ```
 
@@ -65,7 +211,7 @@ ng generate component post/post-detail
 
 - 添加组件
 
-```shell
+```bash
 ng generate service post/post
 ```
 
