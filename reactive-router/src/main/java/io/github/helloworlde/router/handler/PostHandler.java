@@ -52,7 +52,7 @@ public class PostHandler {
 
     public Mono<ServerResponse> update(ServerRequest request) {
         return Mono.zip((data) -> {
-                    // This two object from query behind and request body
+                    // This two object from query DB and request body
                     Post originPost = (Post) data[0];
                     Post newPost = (Post) data[1];
                     originPost.setTitle(newPost.getTitle());

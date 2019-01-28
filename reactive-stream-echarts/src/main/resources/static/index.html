@@ -89,6 +89,13 @@
         appendOnlineAmount(JSON.parse(evt.data));
     };
 
+    postEventSource.onerror = function (evt) {
+        if (postEventSource.readyState === 0) {
+            console.log('The steam has been closed by the server');
+            postEventSource.close();
+        }
+    };
+
     var appendOnlineAmount = function (onlineAmount) {
         // Only save 60 data
         if (dateData.length > 60) {

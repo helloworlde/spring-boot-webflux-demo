@@ -1,8 +1,6 @@
 package io.github.helloworlde.stream.controller;
 
 import io.github.helloworlde.stream.model.OnlineAmount;
-import io.github.helloworlde.stream.model.Post;
-import io.github.helloworlde.stream.repository.PostRepository;
 import io.github.helloworlde.stream.util.PostGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,17 +22,9 @@ public class PostController {
     @Autowired
     private PostGenerator postGenerator;
 
-    @Autowired
-    private PostRepository postRepository;
-
-    @GetMapping("")
-    public Flux<Post> list() {
-        return postRepository.findAll();
-    }
-
     @GetMapping(value = "/online/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<OnlineAmount> online() {
-        return postGenerator.fetchPostStream(Duration.ofSeconds(1))
+        return postGenerator.fetchPostStream(Duration.ofMillis(500))
                 .share();
     }
 

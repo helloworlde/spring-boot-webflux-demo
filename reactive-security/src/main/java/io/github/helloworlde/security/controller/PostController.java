@@ -4,6 +4,7 @@ import io.github.helloworlde.security.common.NotFoundException;
 import io.github.helloworlde.security.model.Post;
 import io.github.helloworlde.security.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -38,13 +39,13 @@ public class PostController {
                 .map(p -> {
                     p.setTitle(post.getTitle());
                     p.setContent(post.getContent());
-                    p.setAuthor(post.getAuthor());
                     return p;
                 })
                 .flatMap(p -> postRepository.save(p));
     }
 
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Post> save(@RequestBody Post post) {
         return postRepository.save(post);
     }
@@ -54,7 +55,7 @@ public class PostController {
     public Mono<Void> delete(@PathVariable("id") String id) {
         return postRepository
                 .findById(id)
-                .then(postRepository.deleteById(id))
-                .switchIfEmpty(Mono.error(new NotFoundException(id)));
+                .switchIfEmpty(Mono.error(new NotFoundException(id)))
+                .then(postRepository.deleteById(id));
     }
 }

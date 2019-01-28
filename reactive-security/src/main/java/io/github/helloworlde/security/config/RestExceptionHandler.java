@@ -1,6 +1,6 @@
-package io.github.helloworlde.mongo.config;
+package io.github.helloworlde.security.config;
 
-import io.github.helloworlde.mongo.common.NotFoundException;
+import io.github.helloworlde.security.common.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

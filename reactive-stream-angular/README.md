@@ -1,11 +1,13 @@
 # 使用 Spring WebFlux 和 Angular 开发响应式应用
 
-使用 WebFlux 作为后端框架，用 Stream 流开发非阻塞的 API，前端使用Angular，数据库使用 MongoDB；构建一个非阻塞的应用
+WebFlux 构建的 Stream 接口应用，前端使用Angular
+
+> 如果使用阻塞式 API，当请求的数据较多时等待时间会很长，影响使用体验；如果使用非阻塞的 API，可以分多次加载数据，明显提升应用相应速度
 
 - 效果
+
 ![效果演示](/img/reactive-stream-angular-demo.gif)
 
-如果使用阻塞式 API，当请求的数据较多时等待时间会很长，影响使用体验；如果使用非阻塞的 API，可以分多次加载数据，明显提升应用相应速度
 
 ## 使用 
 
@@ -25,9 +27,11 @@ cd SpringBootReactive/reactive-stream-angular/client/ && npm install && ng build
 ### 添加依赖
 
 ```groovy
-implementation('org.springframework.boot:spring-boot-starter-webflux')
-implementation('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')    
-implementation('org.projectlombok:lombok')
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')    
+    implementation('org.projectlombok:lombok')
+}    
 ```
 
 ### 添加接口
@@ -306,5 +310,5 @@ const eventSource = new EventSourcePolyfill(url, {
 --- 
 
 #### 参考文章 
-- [https://github.com/mechero/full-reactive-stack](https://github.com/mechero/full-reactive-stack)
+- [full-reactive-stack](https://github.com/mechero/full-reactive-stack)
 - [EventSource not working in angular 6 due to module http and https](https://stackoverflow.com/questions/52352532/eventsource-not-working-in-angular-6-due-to-module-http-and-https)

@@ -39,22 +39,22 @@ public class PostController {
                 .map(p -> {
                     p.setTitle(post.getTitle());
                     p.setContent(post.getContent());
-                    p.setAuthor(post.getAuthor());
                     return p;
                 })
                 .flatMap(p -> postRepository.save(p));
     }
 
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Post> save(@RequestBody Post post) {
         return postRepository.save(post);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> delete(@PathVariable("id") String id) {
         return postRepository
                 .findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(id)))
                 .then(postRepository.deleteById(id));
     }
 

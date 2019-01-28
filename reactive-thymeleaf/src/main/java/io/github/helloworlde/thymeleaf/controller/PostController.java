@@ -47,7 +47,6 @@ public class PostController {
                 .map(p -> {
                     p.setTitle(post.getTitle());
                     p.setContent(post.getContent());
-                    p.setAuthor(post.getAuthor());
                     return p;
                 })
                 .flatMap(p -> postRepository.save(p));
@@ -64,8 +63,8 @@ public class PostController {
     public Mono<Void> delete(@PathVariable("id") String id) {
         return postRepository
                 .findById(id)
-                .then(postRepository.deleteById(id))
-                .switchIfEmpty(Mono.error(new NotFoundException(id)));
+                .switchIfEmpty(Mono.error(new NotFoundException(id)))
+                .then(postRepository.deleteById(id));
     }
 
 }
