@@ -64,6 +64,13 @@
     var stockEventSource = new EventSource("/posts/online/stream");
     stockEventSource.onmessage = function (e) {
         appendStockData(JSON.parse(e.data));
-    }
+    };
+
+    stockEventSource.onerror = function (evt) {
+        if (stockEventSource.readyState === 0) {
+            console.log('The steam has been closed by the server');
+            stockEventSource.close();
+        }
+    };
 </script>
 </html>

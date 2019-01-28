@@ -1,7 +1,6 @@
 package io.github.helloworlde.security.model;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,6 +30,4 @@ public class Post {
     @CreatedDate
     private LocalDateTime createDate;
 
-    @CreatedBy
-    private String author;
 }
