@@ -1,7 +1,6 @@
-package io.github.helloworlde.streamecharts.model;
+package io.github.helloworlde.stream.angular.model;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
+
     @Id
     private String id;
 
@@ -28,8 +28,5 @@ public class Post {
 
     @CreatedDate
     private LocalDateTime createDate;
-
-    @CreatedBy
-    private String author;
 
 }

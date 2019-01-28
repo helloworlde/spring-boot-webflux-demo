@@ -1,7 +1,7 @@
-package io.github.helloworlde.stream.config;
+package io.github.helloworlde.thymeleaf.config;
 
-import io.github.helloworlde.stream.model.Post;
-import io.github.helloworlde.stream.repository.PostRepository;
+import io.github.helloworlde.thymeleaf.model.Post;
+import io.github.helloworlde.thymeleaf.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,14 +23,9 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Start post data initialization ...");
 
-        initPosts();
-
-    }
-
-    private void initPosts() {
         postRepository.deleteAll()
                 .thenMany(
-                        Flux.just("Post One", "Post Two", "Post Three", "Post Four", "Post Five", "Post Six")
+                        Flux.just("Post One", "Post Two")
                                 .flatMap(title -> postRepository.save(
                                         Post.builder()
                                                 .title(title)

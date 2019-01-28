@@ -1,6 +1,6 @@
-package io.github.helloworlde.stream.repository;
+package io.github.helloworlde.thymeleaf.repository;
 
-import io.github.helloworlde.stream.model.Post;
+import io.github.helloworlde.thymeleaf.model.Post;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 /**

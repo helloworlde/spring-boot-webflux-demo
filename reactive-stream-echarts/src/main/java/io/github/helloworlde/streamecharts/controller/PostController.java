@@ -25,7 +25,7 @@ public class PostController {
     @GetMapping(value = "/online/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<OnlineAmount> online() {
         return postGenerator
-                .fetchPostStream(Duration.ofSeconds(1))
+                .fetchPostStream(Duration.ofMillis(500))
                 .share();
     }
 
