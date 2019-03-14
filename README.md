@@ -15,6 +15,7 @@
 |[reactive-stream-echarts](./reactive-stream-echarts/README.md) | 使用事件流生成图表，图表库为 echarts|
 |[reactive-thymeleaf](./reactive-thymeleaf/README.md)| 使用 Thymeleaf 的含有页面的 Demo|
 |[reactive-stream-angular](./reactive-stream-angular/README.md) | 使用 Angular 和 WebFlux 构建的响应式 APP|
+|[reactive-r2jdbc-h2](./reactive-r2jdbc-h2/README.md)| 基本的 WebFlux Demo，使用 REST 接口，H2 作为存储|
 
 
 --- 
@@ -28,3 +29,4 @@
 - [The Reactive Web approach – Introduction](https://thepracticaldeveloper.com/2017/11/04/full-reactive-stack-introduction/)
 - [webflux-streaming-demo](https://github.com/ZhongyangMA/webflux-streaming-demo)
 - [Server-Sent Events 教程](http://www.ruanyifeng.com/blog/2017/05/server-sent_events.html)
+- [Spring Data R2DBC 1.0 M1 released](https://spring.io/blog/2018/12/12/spring-data-r2dbc-1-0-m1-released)
