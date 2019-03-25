@@ -17,7 +17,7 @@
 |[reactive-stream-angular](./reactive-stream-angular/README.md) | 使用 Angular 和 WebFlux 构建的响应式 APP|
 |[reactive-r2jdbc-h2](./reactive-r2jdbc-h2/README.md)| 基本的 WebFlux Demo，使用 REST 接口，H2 作为存储|
 |[reactive-r2jdbc-postgre](./reactive-r2jdbc-postgre/README.md)| 基本的 WebFlux Demo，使用 REST 接口，PostgreSQL 作为存储|
-
+|[reactive-jasync-mysql](./reactive-jasync-mysql/README.md)| 基本的 WebFlux Demo，使用 REST 接口，MySQL 作为存储|
 
 --- 
 
@@ -31,3 +31,4 @@
 - [webflux-streaming-demo](https://github.com/ZhongyangMA/webflux-streaming-demo)
 - [Server-Sent Events 教程](http://www.ruanyifeng.com/blog/2017/05/server-sent_events.html)
 - [Spring Data R2DBC 1.0 M1 released](https://spring.io/blog/2018/12/12/spring-data-r2dbc-1-0-m1-released)
+- [reactive-mysql-with-jasync-and-r2dbc](https://github.com/joshlong/reactive-mysql-with-jasync-and-r2dbc)
