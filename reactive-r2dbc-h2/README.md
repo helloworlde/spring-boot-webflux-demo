@@ -1,17 +1,16 @@
-# 使用 Spring WebFlux 构建非阻塞应用 - PostgreSQL
+# 使用 Spring WebFlux 构建非阻塞应用 - H2
 
-WebFlux 构建的 REST 接口应用，使用 PostgreSQL 作为存储
+WebFlux 构建的 REST 接口应用，使用 H2 作为存储
 
 ### 添加依赖 build.gradle 
 
-- 目前WebFlux对关系型数据库支持不够完整，使用r2jdbc作为 DAO
+- 目前WebFlux对关系型数据库支持不够完整，使用 [r2dbc](https://github.com/spring-projects/spring-data-r2dbc) 作为 DAO
 
 ```groovy
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-parent:2.1.3.RELEASE')
     implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation('org.springframework.data:spring-data-r2dbc:1.0.0.M1')
-    implementation('io.r2dbc:r2dbc-postgresql:1.0.0.M6')
+    implementation('io.r2dbc:r2dbc-h2:1.0.0.M6')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('io.projectreactor:reactor-test')
 }
@@ -21,15 +20,13 @@ dependencies {
 
 - Model 
 
-需要注意的是 `@Table("post.post")`需要指定 PostgreSQL 的 schema 名称
-
 ```java
 @Data
 @ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("post.post")
+@Table("post")
 public class Post {
 
     @Id
@@ -76,13 +73,15 @@ public class PostController {
                                  p.setContent(post.getContent());
                                  return p;
                              })
-                             .flatMap(p -> postRepository.save(p));
+                             .flatMap(p -> postRepository.save(p))
+                             // Query again for can't get id in H2
+                             .flatMap(p -> postRepository.findById(p.getId()));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Post> save(@RequestBody Post post) {
-        // Couldn't get id in current time after save
+        // Couldn't get id in H2 after save
         return postRepository.save(post);
     }
 
@@ -106,36 +105,29 @@ public interface PostRepository extends ReactiveCrudRepository<Post, Long> {
 
 - 初始化数据
 
-脚本分别是 schema.sql 和 data.sql，因为 r2jdbc 暂不支持自动执行，需要手动执行
+脚本分别是 schema.sql 和 data.sql，应用启动时会自动执行
 
 ### 添加配置
 
 - application.properties
 
 ```properties
-spring.datasource.host=localhost
-spring.datasource.port=5432
-spring.datasource.database=post
-spring.datasource.username=root
-spring.datasource.password=password
+spring.datasource.platform=h2
+spring.datasource.name=webflux
+spring.datasource.username=sa
+spring.datasource.password=
 ```
 
 - DatabaseConfig.java
 
-r2jdbc暂时需要手动注入数据源的 Bean
+r2dbc 暂时需要手动注入数据源的 Bean
 
 ```java
 @Configuration
 public class DatabaseConfig extends AbstractR2dbcConfiguration {
 
-    @Value("${spring.datasource.host}")
-    private String host;
-
-    @Value("${spring.datasource.port}")
-    private Integer port;
-
-    @Value("${spring.datasource.database}")
-    private String database;
+    @Value("${spring.datasource.name}")
+    private String datasourceName;
 
     @Value("${spring.datasource.username}")
     private String username;
@@ -143,32 +135,29 @@ public class DatabaseConfig extends AbstractR2dbcConfiguration {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Override
     @Bean
+    @Override
     public ConnectionFactory connectionFactory() {
-        PostgresqlConnectionConfiguration configuration = PostgresqlConnectionConfiguration.builder()
-                                                                                           .host(host)
-                                                                                           .port(port)
-                                                                                           .database(database)
-                                                                                           .username(username)
-                                                                                           .password(password)
-                                                                                           .build();
-        return new PostgresqlConnectionFactory(configuration);
+        return new H2ConnectionFactory(H2ConnectionConfiguration.builder()
+                                                                .inMemory(datasourceName)
+                                                                .username(username)
+                                                                .password(password)
+                                                                .build());
     }
 }
 ```
 
-- 开启 r2jdbc 支持
+- 开启 r2dbc 支持
 
 需要注意的是 `@EnableR2dbcRepositories` 暂时必须放在 Application 的入口类，否则会提示 Repository 的 Bean 注入失败
 
 ```java
 @SpringBootApplication
 @EnableR2dbcRepositories
-public class PostgreApplication {
+public class H2Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(PostgreApplication.class, args);
+        SpringApplication.run(H2Application.class, args);
     }
 
 }

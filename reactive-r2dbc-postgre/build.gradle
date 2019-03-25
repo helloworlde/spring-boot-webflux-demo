@@ -16,7 +16,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-archivesBaseName = 'reactive-r2jdbc-postgre'
+archivesBaseName = 'reactive-r2dbc-postgre'
 
 repositories {
     mavenCentral()
