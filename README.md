@@ -15,8 +15,8 @@
 |[reactive-stream-echarts](./reactive-stream-echarts/README.md) | 使用事件流生成图表，图表库为 echarts|
 |[reactive-thymeleaf](./reactive-thymeleaf/README.md)| 使用 Thymeleaf 的含有页面的 Demo|
 |[reactive-stream-angular](./reactive-stream-angular/README.md) | 使用 Angular 和 WebFlux 构建的响应式 APP|
-|[reactive-r2jdbc-h2](./reactive-r2jdbc-h2/README.md)| 基本的 WebFlux Demo，使用 REST 接口，H2 作为存储|
-|[reactive-r2jdbc-postgre](./reactive-r2jdbc-postgre/README.md)| 基本的 WebFlux Demo，使用 REST 接口，PostgreSQL 作为存储|
+|[reactive-r2dbc-h2](./reactive-r2dbc-h2/README.md)| 基本的 WebFlux Demo，使用 REST 接口，H2 作为存储|
+|[reactive-r2dbc-postgre](./reactive-r2dbc-postgre/README.md)| 基本的 WebFlux Demo，使用 REST 接口，PostgreSQL 作为存储|
 |[reactive-jasync-mysql](./reactive-jasync-mysql/README.md)| 基本的 WebFlux Demo，使用 REST 接口，MySQL 作为存储|
 
 --- 
