@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring WebFlux Streaming</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.2.1/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container wrapper">
+    <div id="container" style="height: 600px; min-width: 310px"></div>
+</div>
+</body>
+<script type="text/javascript" src="/webjars/echarts/4.1.0-release/dist/echarts.js"></script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    option = null;
+
+    var colors = ['#62e0e4', '#e78ed2', '#ff9f7c', '#9de7b7'];
+
+    var dateData = [];
+    var postOneAmountData = [];
+    var postTwoAmountData = [];
+
+    // Chart
+    option = {
+        color: colors,
+        title: {
+            text: 'Post Online Amount'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data: ['Post One', 'Post Two']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                magicType: {show: true, type: ['stack', 'tiled']},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: dateData
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'Post One',
+                type: 'line',
+                smooth: true,
+                stack: 'Total',
+                data: postOneAmountData
+            },
+            {
+                name: 'Post Two',
+                type: 'line',
+                smooth: true,
+                stack: 'Total',
+                data: postTwoAmountData
+            }
+        ]
+    };
+
+
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+
+    // Get data from server by event stream
+    var postEventSource = new EventSource("/posts/online/stream");
+    postEventSource.onmessage = function (evt) {
+        appendOnlineAmount(JSON.parse(evt.data));
+    };
+
+    postEventSource.onerror = function (evt) {
+        if (postEventSource.readyState === 0) {
+            console.log('The steam has been closed by the server');
+            postEventSource.close();
+        }
+    };
+
+    var appendOnlineAmount = function (onlineAmount) {
+        // Only save 60 data
+        if (dateData.length > 60) {
+            dateData.shift();
+            postOneAmountData.shift();
+            postTwoAmountData.shift();
+        }
+
+
+        dateData.push(new Date(onlineAmount.date).toLocaleTimeString());
+        postOneAmountData.push(onlineAmount.postOneAmount);
+        postTwoAmountData.push(onlineAmount.postTwoAmount);
+
+        // Update chart data
+        myChart.setOption({
+            xAxis: {
+                data: dateData
+            },
+            series: [
+                {
+                    data: postOneAmountData
+                },
+                {
+                    data: postTwoAmountData
+                }
+            ]
+        });
+    }
+</script>
+</html>

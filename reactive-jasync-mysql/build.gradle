@@ -1,0 +1,33 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.0.M1'
+    }
+    repositories {
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+        mavenCentral()
+        maven { url 'https://repo.spring.io/libs-milestone' }
+        maven { url 'https://jcenter.bintray.com' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+archivesBaseName = 'reactive-jasync-mysql'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.springframework.data:spring-data-r2dbc:1.0.0.gh-75-SNAPSHOT')
+    implementation('com.github.jasync-sql:jasync-r2dbc-mysql:0.9.32')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('io.projectreactor:reactor-test')
+}

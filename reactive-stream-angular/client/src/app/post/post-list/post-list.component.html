@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="bd-example">
+      <button type="button" class="btn btn-success" (click)="getPostNonBlock()">非阻塞</button>
+      <button type="button" class="btn btn-primary" (click)="getPostBlocked()">阻塞</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="list-group col-8">
+      <a class="list-group-item list-group-item-action"
+         *ngFor="let post of posts | async"
+         [ngClass]="post === selectedPost ? 'active' : ''"
+         (click)="selectPost(post)">
+        {{post.title}} <span class="small text-secondary">({{post.id}})</span>
+      </a>
+    </div>
+
+    <div class="col-4">
+      <app-post-detail [selectedPost]=selectedPost></app-post-detail>
+    </div>
+  </div>
+</div>

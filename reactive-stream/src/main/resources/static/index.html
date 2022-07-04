@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring WebFlux Streaming</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.2.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/highcharts/7.0.1/css/highcharts.css"/>
+</head>
+<body>
+<div class="container wrapper">
+    <div id="chart" style="height: 400px; min-width: 310px"></div>
+</div>
+</body>
+<script type="text/javascript" src="/webjars/highcharts/7.0.1/highcharts.js"></script>
+<script type="text/javascript">
+    var chart = new Highcharts.chart('chart', {
+        title: {
+            text: 'Post Online Amount'
+        },
+        yAxis: {
+            title: {
+                text: 'Online Amount'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        series: [{
+            name: 'Post One',
+            data: []
+        }, {
+            name: 'Post Two',
+            data: []
+        }, {
+            name: 'Post Three',
+            data: []
+        }, {
+            name: 'Post Four',
+            data: []
+        }, {
+            name: 'Post Five',
+            data: []
+        }, {
+            name: 'Post Six',
+            data: []
+        }]
+    });
+    var appendStockData = function (onlineAmount) {
+        chart.series
+            .filter(function (series) {
+                return series.name === onlineAmount.name
+            })
+            .forEach(function (series) {
+                var shift = series.data.length > 40;
+                series.addPoint([new Date(onlineAmount.time).toLocaleTimeString(), onlineAmount.amount], true, shift);
+            });
+    };
+
+    var stockEventSource = new EventSource("/posts/online/stream");
+    stockEventSource.onmessage = function (e) {
+        appendStockData(JSON.parse(e.data));
+    };
+
+    stockEventSource.onerror = function (evt) {
+        if (stockEventSource.readyState === 0) {
+            console.log('The steam has been closed by the server');
+            stockEventSource.close();
+        }
+    };
+</script>
+</html>
